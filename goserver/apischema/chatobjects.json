@@ -1,0 +1,84 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Title",
+    "description": "Title",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https"
+    }
+  ],
+  "paths": {
+  },
+  "components": {
+    "schemas": {
+      "service": {
+        "type": "string",
+        "oneOf": [
+          "chat",
+          "voip"
+        ],
+        "additionalProperties": false
+      },
+      "message_type": {
+        "type": "string",
+        "oneOf": [
+          "LastSeen",
+          "DeleteMessage"
+        ],
+        "additionalProperties": false
+      },
+      "LastSeen": {
+        "type": "object",
+        "required": [
+          "service",
+          "message_type",
+          "user_id",
+          "last_ts"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "last_ts": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "DeleteMessage": {
+        "type": "object",
+        "required": [
+          "service",
+          "message_type",
+          "conversation_id",
+          "message_id"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "conversation_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "message_id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    }
+  }
+}
