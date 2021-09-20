@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Calibri, sans-serif;
+}
+
+#login-container-outer {
+    display: flex;
+    width: 95%;
+    height: 90vh;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#login-container-inner {
+    width: 50%;
+    height: 40vh;
+    border-radius: 4px;
+    box-shadow: 0 5px 10px 0 rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #eee2dc;
+}
+
+.login_row {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items:center;
+    justify-content: space-around;
+}
+
+label {
+    width: 30%;
+    text-align: right;
+}
+
+input {
+    width: 55%;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 2px solid gray;
+    line-height: 2rem;
+}
+
+button {
+    border: none;
+    border-radius: 4px;
+    background-color: #64485c;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    padding: 1rem 3rem;
+    color: white;
+    cursor: pointer;
+}

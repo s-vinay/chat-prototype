@@ -1,1 +1,12 @@
 .idea
+
+# ignore node modules and other pre-requisites from version control
+/frontend/chat-web-ui/node_modules/
+
+# to re-include a file of parent directory ensure parent directory itself is not ignored
+!/frontend/chat-web-ui/public
+/frontend/chat-web-ui/public/*
+
+# except manifest.json in public folder
+!/frontend/chat-web-ui/public/manifest.json
+!/frontend/chat-web-ui/public/index.html
