@@ -30,8 +30,9 @@
         ],
         "additionalProperties": false
       },
-      "LastSeen": {
+      "DoneAck": {
         "type": "object",
+        "description": "Common Done/ACK Message for sync id with no further action required",
         "required": [
           "service",
           "message_type",
@@ -45,6 +46,59 @@
           "message_type": {
             "type": "string"
           },
+          "sync_id": {
+            "type": "string"
+          }
+        }
+      },
+      "NotFound": {
+        "type": "object",
+        "description": "Common Not found Message for various id's via sync id with no further action required",
+        "required": [
+          "service",
+          "message_type",
+          "user_id",
+          "last_ts"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "string",
+            "oneOf": [
+              "user_id",
+              "conversation_id",
+              "message_id"
+            ]
+          }
+        }
+      },
+      "LastSeen": {
+        "type": "object",
+        "description": "Last Seen Request for any user_id, response will be via another LastSeen with sync id",
+        "required": [
+          "service",
+          "message_type",
+          "user_id",
+          "last_ts"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
           "user_id": {
             "type": "string"
           },
@@ -56,6 +110,7 @@
       },
       "DeleteMessage": {
         "type": "object",
+        "description": "Delete Message by conversation id and message id, response will be Done with sync id",
         "required": [
           "service",
           "message_type",
@@ -69,6 +124,9 @@
           "message_type": {
             "type": "string"
           },
+          "sync_id": {
+            "type": "string"
+          },
           "conversation_id": {
             "type": "integer",
             "format": "int64"
@@ -76,6 +134,248 @@
           "message_id": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "CreateConversation": {
+        "type": "object",
+        "description": "Create new conversation if none exists for given set of participants, read existing same as for FetchConversation, response ConversationDetails with sync id",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of participants in conversation, requesting user will be auto added",
+            "items": {
+              "minItems": 1,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "FetchConversation": {
+        "type": "object",
+        "description": "Read existing conversation, response ConversationDetails with sync id, if none return ConversationDetails with conversation_id=0",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of participants in conversation, requesting user will be auto added",
+            "items": {
+              "minItems": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ConversationDetails": {
+        "type": "object",
+        "description": "ConversationDetails with sync id, if none return ConversationDetails with conversation_id=0",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "conversation_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of participants in conversation, requesting user will be auto added",
+            "items": {
+              "minItems": 1,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UnreadMessages": {
+        "type": "object",
+        "description": "Unread messages (Only Latest 100) which are not delivered to user, or delivery receipt is not received, Recurrent Server Push Event ",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "minItems": 1,
+              "type": "object",
+              "properties": {
+                "source_user_id": {
+                  "type": "string"
+                },
+                "conversation_id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "message_id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "recipient_user_id": {
+                  "type": "string",
+                  "description": "Will be blank for group conversations"
+                },
+                "message_content": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "description": " Single Message, Response will be Done with sync id ",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "source_user_id": {
+            "type": "string",
+            "description": "Usually user sending message for Mobile --> Server, and Source of message for Server --> Mobile"
+          },
+          "conversation_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "message_id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Only available for direction Server --> Mobile"
+          },
+          "recipient_user_id": {
+            "type": "string",
+            "description": "Will be blank for group conversations"
+          },
+          "message_content": {
+            "type": "string"
+          },
+          "message_status": {
+            "type": "string",
+            "description": "Will be blank for group conversations, A Delivered from Mobile --> Server with valid parent_message_id, causes message_id removed from unread list",
+            "oneOf": [
+              "Delivered",
+              "Sent",
+              ""
+            ]
+          },
+          "parent_message_id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Valid if a message_status type, referring any other previous message - message_id"
+          }
+        }
+      },
+      "FetchMessagesByConversation": {
+        "type": "object",
+        "description": "Fetch Messages By Given Conversation Id",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "conversation_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "from_ts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "to_ts": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "MessagesByConversation": {
+        "type": "object",
+        "description": "Messages By Given Conversation Id, empty if invalid conversation id",
+        "required": [
+          "service",
+          "message_type"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string"
+          },
+          "conversation_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            }
           }
         }
       }
