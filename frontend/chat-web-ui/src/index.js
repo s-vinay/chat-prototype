@@ -14,8 +14,9 @@ class ChatUI extends React.Component {
                 </Switch>
 
                 <Switch>
-                    <Route path="/chat" exact component={Chat} />
+                    <Route path='/chat' exact component={Chat} />
                 </Switch>
+
             </Router>
         );
     }
