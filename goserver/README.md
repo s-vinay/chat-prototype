@@ -20,6 +20,9 @@ _Runs on wss port: 8081_
 
 ###### Example wss client json templates
 
+#### WSS Login
+wss://127.0.0.1:8081/ws?username=**user-109**&token=**abcd1234pqr**
+
 #### LastSeen
 
 --->

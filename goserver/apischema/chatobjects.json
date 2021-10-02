@@ -38,6 +38,22 @@
         ],
         "additionalProperties": false
       },
+      "Invalid_UserDetails": {
+        "type": "object",
+        "description": "Returns if ws conn credentials are not valid, followed by closing the connection",
+        "required": [
+          "reason",
+          "message"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "DoneAck": {
         "type": "object",
         "description": "Common Done/ACK Message for sync id with no further action required",

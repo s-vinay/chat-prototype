@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"goserver/pkg/apiobjects"
+	"goserver/userconncache"
+	"goserver/utils"
 	"log"
 	"net/http"
-	"sync"
 )
 
 var (
@@ -18,18 +19,6 @@ var (
 type WSMessageWrapper struct {
 	Service     string `json:"service"`
 	MessageType string `json:"message_type"`
-}
-
-// Helper to make Gorilla Websockets threadsafe
-type threadSafeWriter struct {
-	*websocket.Conn
-	sync.Mutex
-}
-
-func (t *threadSafeWriter) WriteJSON(v interface{}) error {
-	t.Lock()
-	defer t.Unlock()
-	return t.Conn.WriteJSON(v)
 }
 
 func loadServiceAndType(s []byte) (string, string) {
@@ -49,12 +38,22 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print("upgrade:", err)
 		return
 	}
-	c := &threadSafeWriter{unsafeConn, sync.Mutex{}}
+	params := r.URL.Query()
+
+	c, err := userconncache.NewThreadSafeWSConn(unsafeConn, params.Get(utils.WS_USERNAME), params.Get(utils.WS_TOKEN))
+	if err != nil {
+		unsafeConn.WriteJSON(&apiobjects.InvalidUserDetails{
+			Reason:  "Invalid",
+			Message: "Invalid user or token information",
+		})
+		unsafeConn.Close()
+		return
+	}
 	// When this frame returns close the Websocket
 	defer c.Close()
 
 	for {
-		_, raw, err := c.ReadMessage()
+		_, raw, err := c.ReadWSConn().ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
