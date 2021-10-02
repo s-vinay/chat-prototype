@@ -25,8 +25,16 @@
       "message_type": {
         "type": "string",
         "oneOf": [
+          "DoneAck",
+          "NotFound",
           "LastSeen",
-          "DeleteMessage"
+          "DeleteMessage",
+          "FetchConversation",
+          "ConversationDetails",
+          "UnreadMessages",
+          "Message",
+          "FetchMessagesByConversation",
+          "MessagesByConversation"
         ],
         "additionalProperties": false
       },
@@ -36,8 +44,7 @@
         "required": [
           "service",
           "message_type",
-          "user_id",
-          "last_ts"
+          "sync_id"
         ],
         "properties": {
           "service": {
@@ -57,8 +64,8 @@
         "required": [
           "service",
           "message_type",
-          "user_id",
-          "last_ts"
+          "sync_id",
+          "resource_id"
         ],
         "properties": {
           "service": {
@@ -68,6 +75,9 @@
             "type": "string"
           },
           "sync_id": {
+            "type": "string"
+          },
+          "resource_id": {
             "type": "string"
           },
           "resource": {
@@ -82,7 +92,7 @@
       },
       "LastSeen": {
         "type": "object",
-        "description": "Last Seen Request for any user_id, response will be via another LastSeen with sync id",
+        "description": "Last Seen Request for any user_id, if wsconn and user_id same, then treat as ping pong, else response will be via another LastSeen with sync id",
         "required": [
           "service",
           "message_type",
@@ -139,7 +149,7 @@
       },
       "CreateConversation": {
         "type": "object",
-        "description": "Create new conversation if none exists for given set of participants, read existing same as for FetchConversation, response ConversationDetails with sync id",
+        "description": "** NOT IMPLEMENTED ** Create new conversation if none exists for given set of participants, read existing same as for FetchConversation, response ConversationDetails with sync id",
         "required": [
           "service",
           "message_type"
@@ -185,9 +195,9 @@
             "type": "array",
             "description": "List of participants in conversation, requesting user will be auto added",
             "items": {
-              "minItems": 1,
-              "type": "integer",
-              "format": "int64"
+              "minItems": 2,
+              "maxItems": 2,
+              "type": "string"
             }
           }
         }
@@ -217,7 +227,8 @@
             "type": "array",
             "description": "List of participants in conversation, requesting user will be auto added",
             "items": {
-              "minItems": 1,
+              "minItems": 2,
+              "maxItems": 2,
               "type": "string"
             }
           }
